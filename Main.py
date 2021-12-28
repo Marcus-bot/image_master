@@ -6,6 +6,8 @@ from PyQt5.QtGui import QPixmap
 from command import *
 import Transfer_Image_style.ProcessCore as Core
 from UI.My_Label import *
+from PyQt5.QtCore import QUrl
+from PyQt5.QtGui import QDesktopServices
 
 
 class My_Mainwindow(Ui_MainWindow, QMainWindow):
@@ -32,6 +34,7 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
 
         self.cmdbar = None
         self.actionOpen.triggered.connect(self.openimage)
+        self.actionAbout_us.triggered.connect(self.about_as)
         self.actionSave.triggered.connect(self.saveimage)
         self.pushButton_Adjust.clicked.connect(self.Adjust_UI)
         self.pushButton_EdgeSelect.clicked.connect(self.EdgeSelect_UI)
@@ -46,6 +49,9 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
         self.pushButton_rot.clicked.connect(self.Rot_UI)
 
 # --------------------------------------------------------------------------------
+    def about_as(self):
+        QDesktopServices.openUrl(
+            QUrl("https://gitee.com/marcus_w/image_master"))
 
     def openimage(self):
         image_path, imgType = QFileDialog.getOpenFileName(

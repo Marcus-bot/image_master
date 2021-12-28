@@ -325,6 +325,7 @@ p, li { white-space: pre-wrap; }
     <property name="title">
      <string>帮助</string>
     </property>
+    <addaction name="actionAbout_us"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
@@ -355,7 +356,7 @@ p, li { white-space: pre-wrap; }
   <action name="actionOpen">
    <property name="icon">
     <iconset>
-     <normaloff>C:/Users/wqy10/.designer/backup/icons/open.png</normaloff>C:/Users/wqy10/.designer/backup/icons/open.png</iconset>
+     <normaloff>../../Image_process/UI/icons/Open.png</normaloff>../../Image_process/UI/icons/Open.png</iconset>
    </property>
    <property name="text">
     <string>Open</string>
@@ -364,7 +365,7 @@ p, li { white-space: pre-wrap; }
   <action name="actionSave">
    <property name="icon">
     <iconset>
-     <normaloff>C:/Users/wqy10/.designer/backup/icons/Save.png</normaloff>C:/Users/wqy10/.designer/backup/icons/Save.png</iconset>
+     <normaloff>../../Image_process/UI/icons/Save.png</normaloff>../../Image_process/UI/icons/Save.png</iconset>
    </property>
    <property name="text">
     <string>Save</string>
@@ -376,7 +377,7 @@ p, li { white-space: pre-wrap; }
   <action name="actionUndo">
    <property name="icon">
     <iconset>
-     <normaloff>C:/Users/wqy10/.designer/backup/icons/undo.png</normaloff>C:/Users/wqy10/.designer/backup/icons/undo.png</iconset>
+     <normaloff>../../Image_process/UI/icons/undo.png</normaloff>../../Image_process/UI/icons/undo.png</iconset>
    </property>
    <property name="text">
     <string>Undo</string>
@@ -388,7 +389,7 @@ p, li { white-space: pre-wrap; }
   <action name="actionRedo">
    <property name="icon">
     <iconset>
-     <normaloff>C:/Users/wqy10/.designer/backup/icons/redo.png</normaloff>C:/Users/wqy10/.designer/backup/icons/redo.png</iconset>
+     <normaloff>../../Image_process/UI/icons/redo.png</normaloff>../../Image_process/UI/icons/redo.png</iconset>
    </property>
    <property name="text">
     <string>Redo</string>
@@ -397,15 +398,23 @@ p, li { white-space: pre-wrap; }
   <action name="actionClose">
    <property name="icon">
     <iconset>
-     <normaloff>C:/Users/wqy10/.designer/backup/icons/close.png</normaloff>C:/Users/wqy10/.designer/backup/icons/close.png</iconset>
+     <normaloff>../../Image_process/UI/icons/close.png</normaloff>../../Image_process/UI/icons/close.png</iconset>
    </property>
    <property name="text">
     <string>Close</string>
    </property>
   </action>
+  <action name="actionAbout_us">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>About us</string>
+   </property>
+  </action>
  </widget>
  <resources>
-  <include location="background.qrc"/>
+  <include location="../../Image_process/UI/background.qrc"/>
  </resources>
  <connections/>
 </ui>
