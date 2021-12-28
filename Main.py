@@ -1,3 +1,12 @@
+'''
+Author: NWPU python group
+Date: 2021-12-28 18:39:37
+LastEditTime: 2021-12-28 20:29:29
+LastEditor: wqy
+Description: file content
+FilePath: /IMAGE_MASTER/Main.py
+'''
+
 import sys
 import cv2
 from UI.UI import Ui_MainWindow
@@ -14,7 +23,7 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
     def __init__(self):
         super(My_Mainwindow, self).__init__()
         self.setupUi(self)
-# ---------------------定义一个自己的Label:My_Label------------------------------------
+# ---------------------创建一个自己的Label:My_Label------------------------------------
         self.label_processed = My_Label(
             self.scrollAreaWidgetContents_2)
         sizePolicy = QtWidgets.QSizePolicy(
@@ -32,36 +41,40 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
         self.label_processed.setText(_translate("MainWindow", "处理后的图像"))
 # ---------------------定义一个自己的Label:My_Label------------------------------------
 
-        self.cmdbar = None
+        self.cmdbar = None  # 控制台实例初始为None
+        # 菜单按钮   链接信号槽
         self.actionOpen.triggered.connect(self.openimage)
         self.actionAbout_us.triggered.connect(self.about_as)
         self.actionSave.triggered.connect(self.saveimage)
-        self.pushButton_Adjust.clicked.connect(self.Adjust_UI)
-        self.pushButton_EdgeSelect.clicked.connect(self.EdgeSelect_UI)
-        self.pushButton_Smooth.clicked.connect(self.Smooth_UI)
-        self.pushButton_Bin.clicked.connect(self.Bin_UI)
-        self.pushButton_ChannelSelect.clicked.connect(self.Channel_UI)
-        self.pushButton_contour.clicked.connect(self.Contour_UI)
-        self.pushButton_Trans.clicked.connect(self.Transfer_UI)
-        self.pushButton_Cut.clicked.connect(self.Cut_UI)
-        self.pushButton_lines.clicked.connect(self.Lines_UI)
-        self.pushButton_circle.clicked.connect(self.Circle_UI)
-        self.pushButton_rot.clicked.connect(self.Rot_UI)
+        self.pushButton_Adjust.clicked.connect(self.Adjust_UI)  # 亮度  对比度
+        self.pushButton_EdgeSelect.clicked.connect(self.EdgeSelect_UI)  # 边缘检测
+        self.pushButton_Smooth.clicked.connect(self.Smooth_UI)  # 滤波
+        self.pushButton_Bin.clicked.connect(self.Bin_UI)  # 二值化
+        self.pushButton_ChannelSelect.clicked.connect(self.Channel_UI)  # 通道选择
+        self.pushButton_contour.clicked.connect(self.Contour_UI)  # 轮廓提取
+        self.pushButton_Trans.clicked.connect(self.Transfer_UI)  # 风格迁移
+        self.pushButton_Cut.clicked.connect(self.Cut_UI)  # 裁剪
+        self.pushButton_lines.clicked.connect(self.Lines_UI)  # 直线检测
+        self.pushButton_circle.clicked.connect(self.Circle_UI)  # 圆检测
+        self.pushButton_rot.clicked.connect(self.Rot_UI)  # 图像旋转
 
 # --------------------------------------------------------------------------------
+    # 调用浏览器打开项目网址
     def about_as(self):
         QDesktopServices.openUrl(
             QUrl("https://gitee.com/marcus_w/image_master"))
 
+    # 打开图片，载入软件
     def openimage(self):
+        # 获取图片地址
         image_path, imgType = QFileDialog.getOpenFileName(
             self, "打开图片", "img", "*.jpg;*.tif;*.png;;All Files(*)")
         if image_path == '':
             return 0
-
+        # 读取为pixmap
         self.image_toshow = QPixmap(image_path).scaled(
             self.label_origin.width(), self.label_origin.height(), QtCore.Qt.KeepAspectRatio)
-
+        # 读入数据
         self.image_now = cv2.imread(image_path)
         self.image_origin = cv2.imread(image_path)
         self.TempPath = 'TEMP/Temp_last.jpg'
@@ -71,6 +84,7 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
         self.show_msg('打开成功')
 
     def saveimage(self):
+        # 选择地址并保存图片
         FileDir = QFileDialog.getSaveFileName(
             self, "保存图片", "img", "*.jpg;*.tif;*.png;;All Files(*)")
         if FileDir[0] == '':  # bug 点击取消也会要求输入名字
@@ -80,7 +94,7 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
         img = self.image_toshow
         img.save(FileDir[0])
 
-    def save_Temp(self):  # 暂时保存修改
+    def save_Temp(self):  # 暂时保存修改，名称为Temp_last，作为缓存
         try:
             self.image_now = self.image_temp
             self.TempPath = 'TEMP/Temp_last.jpg'
@@ -89,55 +103,56 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
             pass
 
     def processed_show(self, image):
+        # label_processed显示函数，支持缩放移动
         path = 'TEMP\Temp.jpg'
-        cv2.imwrite(path, image)
+        cv2.imwrite(path, image)  # 保存temp图片作为当前label processed图片的缓冲
         self.image_toshow = QPixmap(path).scaled(
             self.label_processed.label_wid, self.label_processed.label_hig, QtCore.Qt.KeepAspectRatio)
-        self.label_processed.set_coordinate(self.image_toshow)
+        self.label_processed.set_coordinate(
+            self.image_toshow)  # 在指定坐标创建label显示图片
         self.label_processed.image = image
 
     def cancel_Temp(self):
-        # try:
-        # self.image_temp = self.image_now
-        # self.TempPath = 'TEMP/Temp_last.jpg'
-        # cv2.imwrite(self.TempPath)
+        # 关闭控制台
         self.processed_show(self.image_now)
-
-        # self.cmdbar.gridLayout_cmd.deleteLater()
+        # 使用deletelater删除控制台实例,恢复图像
         self.cmdbar.gridLayoutWidget_cmd.deleteLater()
         self.image_temp = self.image_now
-        self.cmdbar = None
-        # except:
-        #     pass
+        self.cmdbar = None  # 检测有没有控制台被打开，防止重复打开
 
-    def is_opened(self):  # 判断有没有打开图片
+    def is_opened(self):
+        # 判断有没有打开图片，防止出现bug
         try:
             self.image_toshow
         except:
             tips = QMessageBox.question(
-                self, 'Message', 'Please open an image!', QMessageBox.Yes, QMessageBox.Yes)
+                self, 'Message', 'Please open an image!', QMessageBox.Yes, QMessageBox.Yes)  # 提示
             return False
         else:
             return True
 
     def show_msg(self, Msg):
+        # 信息显示函数，显示交互信息
         self.textBrowser_Msg.append('<span style=\" color:#f8f8f8;\">'+Msg)
         self.textBrowser_Msg.moveCursor(self.textBrowser_Msg.textCursor().End)
 
     def show_his(self, His):
+        # 历史记录函数，显示每次调整后的参数等信息
         self.textBrowser_His.append('<span style=\" color:#f8f8f8;\">'+His)
         self.textBrowser_His.moveCursor(self.textBrowser_His.textCursor().End)
 # --------------------------------------亮度对比度----------------------------------
 
     def Adjust_UI(self):
-        if self.cmdbar == None:
-            if self.is_opened() == True:
+        if self.cmdbar == None:  # 检测有没有cmdbar被打开
+            if self.is_opened() == True:  # 检测又没有图片打开
+                # 创建控制台UI并显示（由designer生成）
                 self.gridLayoutWidget = QtWidgets.QWidget(self.groupBox)
                 self.gridLayoutWidget.setGeometry(
                     QtCore.QRect(10, 30, 991, 321))
                 self.gridLayoutWidget.setObjectName("gridLayoutWidget")
                 self.gridLayoutWidget.show()
                 self.cmdbar = cmd_Adjust(self.gridLayoutWidget)
+                # 信号槽链接
                 self.cmdbar.horizontalSlider_a.valueChanged.connect(
                     self.Adjust_core)
                 self.cmdbar.horizontalSlider_b.valueChanged.connect(
@@ -145,22 +160,24 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
                 self.cmdbar.lineEdit_a.editingFinished.connect(
                     self.Adjust_core)
                 self.cmdbar.lineEdit_b.editingFinished.connect(
-                    self.Adjust_core)
-                self.cmdbar.adjust_yes.clicked.connect(self.save_Temp)
-                self.cmdbar.adjust_no.clicked.connect(self.cancel_Temp)
+                    self.Adjust_core)  # 确保slider改变后调用处理函数
+                self.cmdbar.adjust_yes.clicked.connect(
+                    self.save_Temp)  # 点击OK暂存图片
+                self.cmdbar.adjust_no.clicked.connect(
+                    self.cancel_Temp)  # 点击cancel取消更改
                 self.cmdbar.horizontalSlider_a.sliderReleased.connect(
-                    self.Adjust_released)
+                    self.Adjust_released)  # 释放鼠标后显示历史记录和信息
                 self.cmdbar.horizontalSlider_b.sliderReleased.connect(
                     self.Adjust_released)
 
     def Adjust_core(self):
+        # 核心处理函数
         self.image_temp = Core.Image_Adjust(
-            self.image_now, self.cmdbar.a, self.cmdbar.b)
-        # self.TempPath = 'TEMP/Temp.jpg'
-        # cv2.imwrite(self.TempPath, self.image_temp)
+            self.image_now, self.cmdbar.a, self.cmdbar.b)  # 调用内核
         self.processed_show(self.image_temp)
 
     def Adjust_released(self):
+        # 显示信息和历史记录
         self.show_msg('调整成功')
         self.show_his('调整: 对比度 '+str(self.cmdbar.a)+" 亮度: "+str(self.cmdbar.b))
 # --------------------------------------边缘检测----------------------------------
@@ -168,12 +185,14 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
     def EdgeSelect_UI(self):
         if self.cmdbar == None:
             if self.is_opened() == True:
+                # 显示边缘检测UI
                 self.gridLayoutWidget = QtWidgets.QWidget(self.groupBox)
                 self.gridLayoutWidget.setGeometry(
                     QtCore.QRect(10, 30, 991, 321))
                 self.gridLayoutWidget.setObjectName("gridLayoutWidget")
                 self.gridLayoutWidget.show()
                 self.cmdbar = Edge_Select(self.gridLayoutWidget)
+                # 信号槽链接
                 self.cmdbar.horizontalSlider_a.valueChanged.connect(
                     self.EdgeSelect_core)
                 self.cmdbar.horizontalSlider_b.valueChanged.connect(
@@ -186,10 +205,8 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
                 self.cmdbar.adjust_no.clicked.connect(self.cancel_Temp)
 
     def EdgeSelect_core(self):
-        self.image_temp = Core.CannyEdge_detect(
-            self.image_now, self.cmdbar.a, self.cmdbar.b, 1)  # 1是啥？？算法里没用
-        # self.TempPath = 'TEMP/Temp.jpg'
-        # cv2.imwrite(self.TempPath, self.image_temp)
+        self.image_temp = Core.CannyEdge_detect(  # 调用实际处理函数
+            self.image_now, self.cmdbar.a, self.cmdbar.b, 1)  # 1是补充算法多余参数
         self.processed_show(self.image_temp)
 
     def EdgeSelect_released(self):
@@ -201,12 +218,14 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
     def Smooth_UI(self):
         if self.cmdbar == None:
             if self.is_opened() == True:
+                # 创建UI
                 self.gridLayoutWidget = QtWidgets.QWidget(self.groupBox)
                 self.gridLayoutWidget.setGeometry(
                     QtCore.QRect(10, 30, 991, 321))
                 self.gridLayoutWidget.setObjectName("gridLayoutWidget")
                 self.gridLayoutWidget.show()
                 self.cmdbar = Smooth_Image(self.gridLayoutWidget)
+                # 设置交互逻辑
                 self.cmdbar.horizontalSlider_a.valueChanged.connect(
                     self.Smooth_core)
                 self.cmdbar.horizontalSlider_a.sliderReleased.connect(
@@ -215,10 +234,9 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
                 self.cmdbar.adjust_no.clicked.connect(self.cancel_Temp)
 
     def Smooth_core(self):
+        # 平滑滤波，a为滤波阶数，c为滤波器选择参数
         self.image_temp = Core.Image_Blur(
             self.image_now, self.cmdbar.a, self.cmdbar.c)
-        # self.TempPath = 'TEMP/Temp.jpg'
-        # cv2.imwrite(self.TempPath, self.image_temp)
         self.processed_show(self.image_temp)
 
     def Smooth_released(self):
@@ -228,6 +246,7 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
 # ---------------------------------------二值化---------------------------------
 
     def Bin_UI(self):
+        # 创建二值化UI
         if self.cmdbar == None:
             if self.is_opened() == True:
                 self.gridLayoutWidget = QtWidgets.QWidget(self.groupBox)
@@ -244,10 +263,9 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
                 self.cmdbar.adjust_no.clicked.connect(self.cancel_Temp)
 
     def Bin_core(self):
+        # 调用二值化处理内核函数（被链接）
         self.image_temp = Core.Image_Binarization(
             self.image_now, self.cmdbar.a, 1)
-        # self.TempPath = 'TEMP/Temp.jpg'
-        # cv2.imwrite(self.TempPath, self.image_temp)
         self.processed_show(self.image_temp)
 
     def Bin_released(self):
@@ -256,6 +274,7 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
 # ----------------------------------------通道提取--------------------------------
 
     def Channel_UI(self):
+        # 显示通道选择UI
         if self.cmdbar == None:
             if self.is_opened() == True:
                 self.gridLayoutWidget = QtWidgets.QWidget(self.groupBox)
@@ -264,6 +283,7 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
                 self.gridLayoutWidget.setObjectName("gridLayoutWidget")
                 self.gridLayoutWidget.show()
                 self.cmdbar = Channel_Select(self.gridLayoutWidget)
+                # checkbox链接
                 self.cmdbar.checkBox_r.stateChanged.connect(
                     self.ChannelSelect_core)
                 self.cmdbar.checkBox_g.stateChanged.connect(
@@ -277,14 +297,17 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
                     self.ChannelSelect_released)
                 self.cmdbar.checkBox_b.stateChanged.connect(
                     self.ChannelSelect_released)
+
                 self.cmdbar.adjust_yes.clicked.connect(self.save_Temp)
                 self.cmdbar.adjust_no.clicked.connect(self.cancel_Temp)
+                # slider变化调用处理函数
                 self.cmdbar.verticalSlider_r.valueChanged.connect(
                     self.ChannelSelect_core)
                 self.cmdbar.verticalSlider_g.valueChanged.connect(
                     self.ChannelSelect_core)
                 self.cmdbar.verticalSlider_b.valueChanged.connect(
                     self.ChannelSelect_core)
+                # slider释放调用完成函数
                 self.cmdbar.verticalSlider_r.sliderReleased.connect(
                     self.ChannelSelect_released)
                 self.cmdbar.verticalSlider_g.sliderReleased.connect(
@@ -295,8 +318,6 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
     def ChannelSelect_core(self):
         self.image_temp = Core.Channel_Select(
             self.image_now, self.cmdbar.r, self.cmdbar.g, self.cmdbar.b)
-        # self.TempPath = 'TEMP/Temp.jpg'
-        # cv2.imwrite(self.TempPath, self.image_temp)
         self.processed_show(self.image_temp)
 
     def ChannelSelect_released(self):
@@ -308,6 +329,7 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
 # ------------------------------------------轮廓检测------------------------------
 
     def Contour_UI(self):
+        # 轮廓提取的UI
         if self.cmdbar == None:
             if self.is_opened() == True:
                 self.gridLayoutWidget = QtWidgets.QWidget(self.groupBox)
@@ -325,18 +347,16 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
 
     def ContourDetect_core(self):
         self.image_temp = Core.contour_detect(
-            self.image_now, self.cmdbar.width)
-        # self.TempPath = 'TEMP/Temp.jpg'
-        # cv2.imwrite(self.TempPath, self.image_temp)
+            self.image_now, self.cmdbar.width)  # width为轮廓宽度（画图使用）
         self.processed_show(self.image_temp)
 
     def ContourDetect_released(self):
         self.show_msg('轮廓检测')
         self.show_his('轮廓检测:线条宽度 '+str(self.cmdbar.width))
-
 # ------------------------------------------风格迁移------------------------------
 
     def Transfer_UI(self):
+        # 风格迁移UI
         if self.cmdbar == None:
             if self.is_opened() == True:
                 self.gridLayoutWidget = QtWidgets.QWidget(self.groupBox)
@@ -349,12 +369,12 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
                 self.cmdbar.adjust_no.clicked.connect(self.cancel_Temp)
                 self.cmdbar.horizontalSlider_style.valueChanged.connect(
                     self.Transfer_core)
+                self.cmdbar.horizontalSlider_style.sliderReleased.connect(
+                    self.Transfer_released)  # 平滑滤波参数改变则迁移
                 self.cmdbar.comboBox_style.currentTextChanged.connect(
                     self.Transfer_core)
                 self.cmdbar.comboBox_style.currentTextChanged.connect(
-                    self.Transfer_released)
-                self.cmdbar.horizontalSlider_style.sliderReleased.connect(
-                    self.Transfer_released)
+                    self.Transfer_released)  # 模型文件选择变化执行迁移
 
     def Transfer_core(self):
         self.image_temp = Core.style_transfer(
@@ -364,10 +384,10 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
     def Transfer_released(self):
         self.show_msg('风格迁移 成功')
         self.show_his('风格迁移: '+self.cmdbar.choice)
-
 # ------------------------------------------裁剪---------------------------------
 
     def Cut_UI(self):
+        # 图片裁剪UI
         if self.cmdbar == None:
             if self.is_opened() == True:
                 self.gridLayoutWidget = QtWidgets.QWidget(self.groupBox)
@@ -382,11 +402,12 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
                 self.cmdbar.adjust_yes.clicked.connect(self.Cut_Released)
                 self.cmdbar.adjust_no.clicked.connect(self.Cut_Released)
                 self.cmdbar.adjust_no.clicked.connect(self.Cut_Off)
-                self.label_origin.flag2 = True
-                self.label_processed.flag2 = True
+                self.label_origin.flag2 = True  # label origin标志位，True为进入裁剪模式
+                self.label_processed.flag2 = True  # label processed标志位
 
     def Cut_core(self):
-        if self.label_origin.paint_flag == True:
+        # paint flag在鼠标点击对应的label时变为True，此时执行对应label的剪切函数
+        if self.label_origin.paint_flag == True:  # Label origin裁剪
             img = self.image_origin
             width_old = img.shape[1]
             k = width_old / self.image_toshow.width()
@@ -421,16 +442,19 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
             self.show_his('裁剪尺寸: x:{} y:{}'.format(x1-x0, y1-y0))
 
     def Cut_Released(self):
+        # 点击OK或Cancel后，图像上绘制区域清除
         self.label_origin.erase()
         self.label_processed.erase()
         pass
 
     def Cut_Off(self):
+        # 点击cancel后退出裁剪模式
         self.label_origin.flag2 = False
         self.label_processed.flag2 = False
 # ------------------------------------------直线检测---------------------------------
 
     def Lines_UI(self):
+        # 生成直线检测UI
         if self.cmdbar == None:
             if self.is_opened() == True:
                 self.gridLayoutWidget = QtWidgets.QWidget(self.groupBox)
@@ -458,8 +482,8 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
     def Lines_released(self):
         self.show_msg('直线检测完成')
         self.show_his('直线最小长度:{} 最大宽度:{}'.format(self.cmdbar.a, self.cmdbar.b))
-
 # ------------------------------------------旋转---------------------------------
+
     def Rot_UI(self):
         if self.cmdbar == None:
             if self.is_opened() == True:
@@ -475,15 +499,15 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
                 self.cmdbar.pushButton_right.clicked.connect(self.Rot_core)
 
     def Rot_core(self):
+        # 图像旋转内核
         self.image_temp = Core.Rotate_image(self.image_now, self.cmdbar.angle)
         self.processed_show(self.image_temp)
         self.show_msg('旋转完成')
         self.show_his('旋转')
-
-
 # ------------------------------------------圆形检测---------------------------------
 
     def Circle_UI(self):
+        # 生成UI
         if self.cmdbar == None:
             if self.is_opened() == True:
                 self.gridLayoutWidget = QtWidgets.QWidget(self.groupBox)
@@ -492,6 +516,7 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
                 self.gridLayoutWidget.setObjectName("gridLayoutWidget")
                 self.gridLayoutWidget.show()
                 self.cmdbar = Circle_Detect(self.gridLayoutWidget)
+                # slider变化执行处理
                 self.cmdbar.horizontalSlider_a.valueChanged.connect(
                     self.Circle_core)
                 self.cmdbar.horizontalSlider_b.valueChanged.connect(
@@ -500,6 +525,7 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
                     self.Circle_core)
                 self.cmdbar.adjust_yes.clicked.connect(self.save_Temp)
                 self.cmdbar.adjust_no.clicked.connect(self.cancel_Temp)
+                # slider释放执行信息发送
                 self.cmdbar.horizontalSlider_a.sliderReleased.connect(
                     self.Circle_released)
                 self.cmdbar.horizontalSlider_b.sliderReleased.connect(
@@ -509,7 +535,7 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
 
     def Circle_core(self):
         self.image_temp = Core.HoughCircle_detect(
-            self.image_now, self.cmdbar.a, self.cmdbar.b, self.cmdbar.d)
+            self.image_now, self.cmdbar.a, self.cmdbar.b, self.cmdbar.d)  # abd为最小半径，最大半径，最小圆心距
         self.processed_show(self.image_temp)
 
     def Circle_released(self):
@@ -520,6 +546,6 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    temp = My_Mainwindow()
+    temp = My_Mainwindow()  # 创建窗口
     temp.show()
     sys.exit(app.exec_())

@@ -3,7 +3,7 @@ from Main import My_Mainwindow
 
 
 class cmd_Adjust(My_Mainwindow, QtWidgets.QWidget):
-
+    # 调整控制台
     def __init__(self, widget):
         super(cmd_Adjust, self).__init__()
 
@@ -11,9 +11,10 @@ class cmd_Adjust(My_Mainwindow, QtWidgets.QWidget):
         self.gridLayout_cmd = QtWidgets.QGridLayout(self.gridLayoutWidget_cmd)
         self.gridLayout_cmd.setContentsMargins(20, 10, 20, 10)
         self.gridLayout_cmd.setObjectName("gridLayout_cmd")
-        self.label_a = QtWidgets.QLabel(self.gridLayoutWidget_cmd)
-        self.label_a = QtWidgets.QLabel(self.gridLayoutWidget_cmd)
 # ----------------------------中间为UI界面---------------------------
+        # 在layout中生成label
+        self.label_a = QtWidgets.QLabel(self.gridLayoutWidget_cmd)
+        self.label_a = QtWidgets.QLabel(self.gridLayoutWidget_cmd)
         self.label_a.setObjectName("label_a")
         self.gridLayout_cmd.addWidget(self.label_a, 0, 0, 1, 1)
         self.lineEdit_a = QtWidgets.QLineEdit(self.gridLayoutWidget_cmd)
@@ -55,9 +56,10 @@ class cmd_Adjust(My_Mainwindow, QtWidgets.QWidget):
 
         self.lineEdit_a.setValidator(QtGui.QIntValidator(-99, 99))
         self.lineEdit_b.setValidator(QtGui.QIntValidator(-99, 99))
-        self.a = self.horizontalSlider_a.value()
+        self.a = self.horizontalSlider_a.value()  # 初始化 sliderbar值
         self.b = self.horizontalSlider_b.value()
 
+        # 链接参数改变
         self.horizontalSlider_a.valueChanged.connect(self.changed_a)
         self.horizontalSlider_b.valueChanged.connect(self.changed_b)
         self.lineEdit_a.editingFinished.connect(self.set_a)
@@ -75,6 +77,7 @@ class cmd_Adjust(My_Mainwindow, QtWidgets.QWidget):
         self.adjust_no.setText(_translate("MainWindow", "cancel"))
 
     def changed_a(self):
+        # 获取slider值，更新editor
         self.a = self.horizontalSlider_a.value()
         self.lineEdit_a.setText(str(self.a))
 
@@ -83,6 +86,7 @@ class cmd_Adjust(My_Mainwindow, QtWidgets.QWidget):
         self.lineEdit_b.setText(str(self.b))
 
     def set_a(self):
+        # 使用lineedit设置值，同步更新slider
         self.a = int(self.lineEdit_a.text())
         self.horizontalSlider_a.setValue(self.a)
 
@@ -95,13 +99,10 @@ class Edge_Select(My_Mainwindow, QtWidgets.QWidget):
 
     def __init__(self, widget):
         super(Edge_Select, self).__init__()
-
         self.gridLayoutWidget_cmd = widget
         self.gridLayout_cmd = QtWidgets.QGridLayout(self.gridLayoutWidget_cmd)
         self.gridLayout_cmd.setContentsMargins(20, 10, 20, 10)
         self.gridLayout_cmd.setObjectName("gridLayout_cmd")
-        self.label_a = QtWidgets.QLabel(self.gridLayoutWidget_cmd)
-        self.label_a = QtWidgets.QLabel(self.gridLayoutWidget_cmd)
 # ----------------------------中间为UI界面---------------------------
         self.adjust_yes = QtWidgets.QPushButton(self.gridLayoutWidget_cmd)
         self.adjust_yes.setObjectName("adjust_yes")
@@ -173,7 +174,7 @@ class Edge_Select(My_Mainwindow, QtWidgets.QWidget):
 
 
 class Smooth_Image(My_Mainwindow, QtWidgets.QWidget):
-
+    # 滤波器
     def __init__(self, widget):
         super(Smooth_Image, self).__init__()
 
@@ -181,8 +182,6 @@ class Smooth_Image(My_Mainwindow, QtWidgets.QWidget):
         self.gridLayout_cmd = QtWidgets.QGridLayout(self.gridLayoutWidget_cmd)
         self.gridLayout_cmd.setContentsMargins(20, 10, 20, 10)
         self.gridLayout_cmd.setObjectName("gridLayout_cmd")
-        self.label_a = QtWidgets.QLabel(self.gridLayoutWidget_cmd)
-        self.label_a = QtWidgets.QLabel(self.gridLayoutWidget_cmd)
 # ----------------------------中间为UI界面---------------------------
         self.adjust_yes = QtWidgets.QPushButton(self.gridLayoutWidget_cmd)
         self.adjust_yes.setObjectName("adjust_yes")
@@ -223,6 +222,7 @@ class Smooth_Image(My_Mainwindow, QtWidgets.QWidget):
         self.retranslate()
         self.a = self.horizontalSlider_a.value()
         self.c = 1
+        # 链接滤波器阶数处理
         self.horizontalSlider_a.valueChanged.connect(self.changed_a)
         self.comboBox.currentTextChanged.connect(self.changed_choice)
         self.lineEdit_smooth.editingFinished.connect(self.set_a)
@@ -235,10 +235,11 @@ class Smooth_Image(My_Mainwindow, QtWidgets.QWidget):
         self.adjust_yes.setText(_translate("MainWindow", "OK"))
         self.adjust_no.setText(_translate("MainWindow", "cancel"))
 
-        self.choice = '均值滤波'
+        self.choice = '均值滤波'  # 添加comboBox
         self.choice_list = ['中值滤波', '双边滤波', '高斯滤波']
         self.comboBox.addItem(self.choice)
         self.comboBox.addItems(self.choice_list)
+    # slider和edit同步改变函数
 
     def changed_a(self):
         self.a = self.horizontalSlider_a.value()
@@ -263,7 +264,7 @@ class Smooth_Image(My_Mainwindow, QtWidgets.QWidget):
 
 
 class Bin_Image(My_Mainwindow, QtWidgets.QWidget):
-
+    # 二值化
     def __init__(self, widget):
         super(Bin_Image, self).__init__()
 
@@ -314,6 +315,7 @@ class Bin_Image(My_Mainwindow, QtWidgets.QWidget):
             _translate("MainWindow", "范围：0到255"))
 
     def changed_a(self):
+        # 二值化阈值
         self.a = self.horizontalSlider_a.value()
         self.lineEdit_bin.setText(str(self.a))
 
@@ -386,9 +388,11 @@ class Channel_Select(My_Mainwindow, QtWidgets.QWidget):
         self.gridLayout_cmd.setRowStretch(2, 1)
 # --------------------------中间为UI界面-----------------------------
         self.retranslate()
+        # checkbox默认勾选
         self.checkBox_r.setChecked(True)
         self.checkBox_g.setChecked(True)
         self.checkBox_b.setChecked(True)
+        # 通道默认全选
         self.verticalSlider_r.setValue(100)
         self.verticalSlider_g.setValue(100)
         self.verticalSlider_b.setValue(100)
@@ -409,6 +413,7 @@ class Channel_Select(My_Mainwindow, QtWidgets.QWidget):
         self.checkBox_g.setText(_translate("MainWindow", "Green"))
         self.checkBox_b.setText(_translate("MainWindow", "Blue"))
         self.checkBox_r.setText(_translate("MainWindow", "Red"))
+    # checkbox更改rgb参数
 
     def changed_r(self):
         if self.checkBox_r.isChecked():
@@ -433,6 +438,7 @@ class Channel_Select(My_Mainwindow, QtWidgets.QWidget):
         else:
             self.b = 0
             self.verticalSlider_b.setValue(0)
+    # slider 更改参数
 
     def vchange_rgb(self):
         self.r = self.verticalSlider_r.value()/100.0
@@ -455,7 +461,7 @@ class Channel_Select(My_Mainwindow, QtWidgets.QWidget):
 
 
 class Contour_Detect(My_Mainwindow, QtWidgets.QWidget):
-
+    # 轮廓检测
     def __init__(self, widget):
         super(Contour_Detect, self).__init__()
 
@@ -508,11 +514,12 @@ class Contour_Detect(My_Mainwindow, QtWidgets.QWidget):
         self.label_width.setText(_translate("MainWindow", "轮廓宽度"))
 
     def changed_width(self):
+        # 获取轮廓宽度
         self.width = self.horizontalSlider_width.value()
 
 
 class Style_Transfer(My_Mainwindow, QtWidgets.QWidget):
-
+    # 风格迁移
     def __init__(self, widget):
         super(Style_Transfer, self).__init__()
 
@@ -563,7 +570,7 @@ class Style_Transfer(My_Mainwindow, QtWidgets.QWidget):
         self.gridLayout_cmd.setColumnStretch(2, 1)
 # --------------------------中间为UI界面-----------------------------
         self.retranslate()
-        self.f = 1
+        self.f = 1  # 初始化滤波器参数（大于等于1的奇数）
         self.comboBox_style.currentTextChanged.connect(self.changed_style)
         self.horizontalSlider_style.valueChanged.connect(self.changed_f)
 
@@ -573,6 +580,7 @@ class Style_Transfer(My_Mainwindow, QtWidgets.QWidget):
         self.adjust_no.setText(_translate("MainWindow", "cancel"))
         self.label_width_2.setText(_translate("MainWindow", "中值滤波参数"))
         self.label_style.setText(_translate("MainWindow", "选择风格"))
+        # 设置模型名称
         self.choice = 'the_wave'
         self.model = 'Transfer_Image_style/the_wave.t7'
         self.choice_list = ['the_scream', 'udnie', 'mosaic',
@@ -585,11 +593,12 @@ class Style_Transfer(My_Mainwindow, QtWidgets.QWidget):
 
     def changed_style(self):
         self.choice = self.comboBox_style.currentText()
+        # 获取模型文件地址
         self.model = 'Transfer_Image_style/'+self.choice+'.t7'
 
 
 class Cut_Image(My_Mainwindow, QtWidgets.QWidget):
-
+    # 图像裁剪UI
     def __init__(self, widget):
         super(Cut_Image, self).__init__()
 
@@ -642,7 +651,7 @@ class Cut_Image(My_Mainwindow, QtWidgets.QWidget):
 
 
 class Lines_Detect(My_Mainwindow, QtWidgets.QWidget):
-
+    # 直线检测UI
     def __init__(self, widget):
         super(Lines_Detect, self).__init__()
 
@@ -699,7 +708,7 @@ class Lines_Detect(My_Mainwindow, QtWidgets.QWidget):
         self.gridLayout_cmd.setColumnStretch(2, 1)
 # --------------------------中间为UI界面-----------------------------
         self.retranslate()
-
+        # 初始化参数
         self.a = self.horizontalSlider_a.value()
         self.b = self.horizontalSlider_b.value()
 
@@ -723,7 +732,7 @@ class Lines_Detect(My_Mainwindow, QtWidgets.QWidget):
 
 
 class Circle_Detect(My_Mainwindow, QtWidgets.QWidget):
-
+    # 圆检测
     def __init__(self, widget):
         super(Circle_Detect, self).__init__()
 
@@ -827,7 +836,7 @@ class Circle_Detect(My_Mainwindow, QtWidgets.QWidget):
 
 
 class Rot_Image(My_Mainwindow, QtWidgets.QWidget):
-
+    # 图像旋转
     def __init__(self, widget):
         super(Rot_Image, self).__init__()
 
@@ -892,6 +901,7 @@ class Rot_Image(My_Mainwindow, QtWidgets.QWidget):
         self.adjust_no.setText(_translate("MainWindow", "cancel"))
 
     def rot_left(self):
+        # 共0 90 180 360 四个状态  限制angle取值为1234
         self.angle -= 1
         self.angle = 4 if self.angle == 0 else self.angle
 
