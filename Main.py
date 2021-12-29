@@ -1,7 +1,7 @@
 '''
 Author: NWPU python group
 Date: 2021-12-28 18:39:37
-LastEditTime: 2021-12-29 15:30:44
+LastEditTime: 2021-12-29 18:30:27
 LastEditor: wqy
 Description: file content
 '''
@@ -22,24 +22,8 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
     def __init__(self):
         super(My_Mainwindow, self).__init__()
         self.setupUi(self)
-# ---------------------创建一个自己的Label:My_Label------------------------------------
-        # self.label_processed = MyLabel(
-        #     self.scrollAreaWidgetContents_2)
-        # sizePolicy = QtWidgets.QSizePolicy(
-        #     QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
-        # sizePolicy.setHorizontalStretch(0)
-        # sizePolicy.setVerticalStretch(0)
-        # sizePolicy.setHeightForWidth(
-        #     self.label_processed.sizePolicy().hasHeightForWidth())
-        # self.label_processed.setSizePolicy(sizePolicy)
-        # self.label_processed.setAlignment(QtCore.Qt.AlignCenter)
-        # self.label_processed.setObjectName("label_processed")
-        # self.gridLayout_2.addWidget(self.label_processed, 0, 0, 1, 1)
 
-        # _translate = QtCore.QCoreApplication.translate
-        # self.label_processed.setText(_translate("MainWindow", "处理后的图像"))
-# ---------------------创建一个自己的Label:My_Label------------------------------------
-
+# ---------------------链接菜单与控制台UI显示函数------------------------------------
         self.cmdbar = None  # 控制台实例初始为None
         # 菜单按钮   链接信号槽
         self.actionOpen.triggered.connect(self.openimage)
@@ -72,6 +56,8 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
             return 0
         # 读取为pixmap
         self.image_toshow = QPixmap(image_path).scaled(
+            self.label_origin.width(), self.label_origin.height(), QtCore.Qt.KeepAspectRatio)
+        self.image_toshow_origin = QPixmap(image_path).scaled(
             self.label_origin.width(), self.label_origin.height(), QtCore.Qt.KeepAspectRatio)
         # 读入数据
         self.image_now = cv2.imread(image_path)
@@ -108,6 +94,7 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
         cv2.imwrite(path, image)  # 保存temp图片作为当前label processed图片的缓冲
         self.image_toshow = QPixmap(path).scaled(
             self.label_processed.label_wid, self.label_processed.label_hig, QtCore.Qt.KeepAspectRatio)
+
         self.label_processed.set_coordinate(
             self.image_toshow)  # 在指定坐标创建label显示图片
         self.label_processed.image = image
@@ -411,16 +398,16 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
         if self.label_origin.paint_flag == True:  # Label origin裁剪
             img = self.image_origin
             width_old = img.shape[1]
-            k = width_old / self.image_toshow.width()
+            k = width_old / self.image_toshow_origin.width()
             x0 = int((self.label_origin.x0 - (self.label_origin.width() -
-                                              self.image_toshow.width()) / 2) * k)
+                                              self.image_toshow_origin.width()) / 2) * k)
             x1 = int((self.label_origin.x1 - (self.label_origin.width() -
-                                              self.image_toshow.width()) / 2) * k)
+                                              self.image_toshow_origin.width()) / 2) * k)
             y0 = int((self.label_origin.y0 - (self.label_origin.height() -
-                                              self.image_toshow.height()) / 2) * k)
+                                              self.image_toshow_origin.height()) / 2) * k)
             y1 = int((self.label_origin.y1 - (self.label_origin.height() -
-                                              self.image_toshow.height()) / 2) * k)
-            self.image_temp = img[y0:y1, x0:x1]
+                                              self.image_toshow_origin.height()) / 2) * k)
+            self.image_temp = img[y0:y1, x0:x1, :]
             self.processed_show(self.image_temp)
             self.show_msg('裁剪成功')
             self.show_his('裁剪尺寸: x:{} y:{}'.format(x1-x0, y1-y0))

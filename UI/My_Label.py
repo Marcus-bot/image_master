@@ -1,7 +1,7 @@
 '''
 Author: NWPU python group
 Date: 2021-12-28 18:39:38
-LastEditTime: 2021-12-29 15:04:08
+LastEditTime: 2021-12-29 18:25:38
 LastEditor: wqy
 Description: file content
 '''
@@ -45,10 +45,11 @@ class MyLabel(QtWidgets.QLabel):
     def mousePressEvent(self, event):
         # 鼠标按下事件
         if event.buttons() == QtCore.Qt.LeftButton:
-            self.left_flag = True  # 左键按下
-            self.erase_flag = False  # 不可执行清除
-            self.x0 = event.x()  # 获取坐标
-            self.y0 = event.y()
+            if self.flag2 == True:
+                self.left_flag = True  # 左键按下
+                self.erase_flag = False  # 不可执行清除
+                self.x0 = event.x()  # 获取坐标
+                self.y0 = event.y()
         if event.buttons() == QtCore.Qt.RightButton:
             self.right_flag = True  # 右键按下
 
