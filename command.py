@@ -1,8 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from Main import My_Mainwindow
 
 
-class cmd_Adjust(My_Mainwindow, QtWidgets.QWidget):
+class cmd_Adjust(QtWidgets.QWidget):
     # 调整控制台
     def __init__(self, widget):
         super(cmd_Adjust, self).__init__()
@@ -95,7 +94,7 @@ class cmd_Adjust(My_Mainwindow, QtWidgets.QWidget):
         self.horizontalSlider_b.setValue(self.b)
 
 
-class Edge_Select(My_Mainwindow, QtWidgets.QWidget):
+class Edge_Select(QtWidgets.QWidget):
 
     def __init__(self, widget):
         super(Edge_Select, self).__init__()
@@ -173,7 +172,7 @@ class Edge_Select(My_Mainwindow, QtWidgets.QWidget):
         self.b = self.horizontalSlider_b.value()
 
 
-class Smooth_Image(My_Mainwindow, QtWidgets.QWidget):
+class Smooth_Image(QtWidgets.QWidget):
     # 滤波器
     def __init__(self, widget):
         super(Smooth_Image, self).__init__()
@@ -263,7 +262,7 @@ class Smooth_Image(My_Mainwindow, QtWidgets.QWidget):
             self.c = 4
 
 
-class Bin_Image(My_Mainwindow, QtWidgets.QWidget):
+class Bin_Image(QtWidgets.QWidget):
     # 二值化
     def __init__(self, widget):
         super(Bin_Image, self).__init__()
@@ -324,7 +323,7 @@ class Bin_Image(My_Mainwindow, QtWidgets.QWidget):
         self.horizontalSlider_a.setValue(self.a)
 
 
-class Channel_Select(My_Mainwindow, QtWidgets.QWidget):
+class Channel_Select(QtWidgets.QWidget):
 
     def __init__(self, widget):
         super(Channel_Select, self).__init__()
@@ -460,7 +459,7 @@ class Channel_Select(My_Mainwindow, QtWidgets.QWidget):
             self.checkBox_b.setChecked(True)
 
 
-class Contour_Detect(My_Mainwindow, QtWidgets.QWidget):
+class Contour_Detect(QtWidgets.QWidget):
     # 轮廓检测
     def __init__(self, widget):
         super(Contour_Detect, self).__init__()
@@ -518,7 +517,7 @@ class Contour_Detect(My_Mainwindow, QtWidgets.QWidget):
         self.width = self.horizontalSlider_width.value()
 
 
-class Style_Transfer(My_Mainwindow, QtWidgets.QWidget):
+class Style_Transfer(QtWidgets.QWidget):
     # 风格迁移
     def __init__(self, widget):
         super(Style_Transfer, self).__init__()
@@ -597,7 +596,7 @@ class Style_Transfer(My_Mainwindow, QtWidgets.QWidget):
         self.model = 'Transfer_Image_style/'+self.choice+'.t7'
 
 
-class Cut_Image(My_Mainwindow, QtWidgets.QWidget):
+class Cut_Image(QtWidgets.QWidget):
     # 图像裁剪UI
     def __init__(self, widget):
         super(Cut_Image, self).__init__()
@@ -650,7 +649,7 @@ class Cut_Image(My_Mainwindow, QtWidgets.QWidget):
         self.label_2.setText(_translate("MainWindow", "取消"))
 
 
-class Lines_Detect(My_Mainwindow, QtWidgets.QWidget):
+class Lines_Detect(QtWidgets.QWidget):
     # 直线检测UI
     def __init__(self, widget):
         super(Lines_Detect, self).__init__()
@@ -731,7 +730,7 @@ class Lines_Detect(My_Mainwindow, QtWidgets.QWidget):
         self.b = self.horizontalSlider_b.value()
 
 
-class Circle_Detect(My_Mainwindow, QtWidgets.QWidget):
+class Circle_Detect(QtWidgets.QWidget):
     # 圆检测
     def __init__(self, widget):
         super(Circle_Detect, self).__init__()
@@ -835,7 +834,7 @@ class Circle_Detect(My_Mainwindow, QtWidgets.QWidget):
         self.d = self.horizontalSlider_d.value()
 
 
-class Rot_Image(My_Mainwindow, QtWidgets.QWidget):
+class Rot_Image(QtWidgets.QWidget):
     # 图像旋转
     def __init__(self, widget):
         super(Rot_Image, self).__init__()
