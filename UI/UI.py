@@ -9,7 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from UI.My_Label import MyLabel_2
+from UI.My_Label import MyLabel, MyLabel_2
 
 
 class QScrollArea(QtWidgets.QScrollArea):
@@ -87,6 +87,7 @@ class Ui_MainWindow(object):
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.gridLayout = QtWidgets.QGridLayout(self.scrollAreaWidgetContents)
         self.gridLayout.setObjectName("gridLayout")
+
         self.label_origin = MyLabel_2(self.scrollAreaWidgetContents)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
@@ -123,6 +124,18 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_2.setContentsMargins(10, -1, -1, -1)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.label_processed = MyLabel(
+            self.scrollAreaWidgetContents_2)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.label_processed.sizePolicy().hasHeightForWidth())
+        self.label_processed.setSizePolicy(sizePolicy)
+        self.label_processed.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_processed.setObjectName("label_processed")
+        self.gridLayout_2.addWidget(self.label_processed, 0, 0, 1, 1)
         self.groupBox = QtWidgets.QGroupBox(self.centralwidget)
         self.groupBox.setObjectName("groupBox")
         self.horizontalLayout_2.addWidget(self.groupBox)
@@ -235,6 +248,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
+
         MainWindow.setWindowTitle(_translate("MainWindow", "Image Master"))
         self.pushButton_Bin.setText(_translate("MainWindow", "二值化"))
         self.pushButton_ChannelSelect.setText(_translate("MainWindow", "通道提取"))
@@ -248,6 +262,7 @@ class Ui_MainWindow(object):
         self.pushButton_circle.setText(_translate("MainWindow", "圆形检测"))
         self.pushButton_rot.setText(_translate("MainWindow", "旋转"))
         self.label_origin.setText(_translate("MainWindow", "原图"))
+        self.label_processed.setText(_translate("MainWindow", "处理后的图像"))
         self.groupBox.setTitle(_translate("MainWindow", "控制台"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(
             self.tab), _translate("MainWindow", "history"))

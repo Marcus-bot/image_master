@@ -3,6 +3,8 @@ import cv2
 import numpy as np
 import random
 
+from numpy.core.records import get_remaining_size
+
 image_path = ''
 image_befo_path = ''
 floder_path = ''
@@ -101,6 +103,7 @@ def Image_Blur(image, a, b):
         img_Guassian = cv2.GaussianBlur(image, (5, 5), 0)  # 高斯滤波
         for i in range(a - 1):
             img_Guassian = cv2.blur(img_Guassian, (5, 5))
+
         return img_Guassian
 
 
@@ -130,7 +133,7 @@ def HoughLines_detect(image, a, b):
 
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     edges = cv2.Canny(gray, 50, 150, apertureSize=3)  # Canny算子提取边缘
-    lines = cv2.HoughLinesP(edges, 1, np.pi / 180, 100,
+    lines = cv2.HoughLinesP(edges, 1, np.pi / 180, 50,
                             minLineLength=a, maxLineGap=b)  # Hough变换提取直线
     if lines is None:
         return image
@@ -153,7 +156,7 @@ def HoughCircle_detect(image, a, b, d):
     out_img = image*1
     color = (0, 0, 255)
     dst = cv2.pyrMeanShiftFiltering(out_img, 10, 100)  # 预滤波
-    dst = cv2.cvtColor(dst, cv2.COLOR_BGRA2GRAY)
+    dst = cv2.cvtColor(dst, cv2.COLOR_BGR2GRAY)
     circle = cv2.HoughCircles(
         dst, cv2.HOUGH_GRADIENT, 1, d, param1=50, param2=30, minRadius=a, maxRadius=b)
     if not circle is None:
@@ -197,26 +200,21 @@ def Channel_Select(image, r, g, b):
 
 
 def style_transfer(image, model, median_filter):
-    # model = 'Transfer_Image_style/the_wave.t7'  # 界面按键1 选择迁移模型
-    # '''model:文件后缀.t7的文件'''
 
     net = cv2.dnn.readNetFromTorch(model)
 
-    # cap = cv2.VideoCapture('Transfer_Image_style\zhangshun.jpg')  # 界面按键2 选择文件
     frame = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-    # median_filter = 1  # 界面阈值调整(棒?) 中值滤波系数
 
-    # cv2.namedWindow('Styled image', cv2.WINDOW_NORMAL)
-    # while cv2.waitKey(1) < 0:
-    # hasFrame, frame = cap.read()
-    # if not hasFrame:
-    #     cv2.waitKey()
-    #     break
+    B_mean = np.mean(image[:, :, 0])
+    G_mean = np.mean(image[:, :, 1])
+    R_mean = np.mean(image[:, :, 2])
 
     inWidth = frame.shape[1]
     inHeight = frame.shape[0]
+    # inp = cv2.dnn.blobFromImage(frame, 1.0, (inWidth, inHeight),
+    #                             (103.939, 116.779, 123.68), swapRB=False, crop=False)
     inp = cv2.dnn.blobFromImage(frame, 1.0, (inWidth, inHeight),
-                                (103.939, 116.779, 123.68), swapRB=False, crop=False)
+                                (B_mean, G_mean, R_mean), swapRB=False, crop=False)
 
     net.setInput(inp)
     out = net.forward()
@@ -229,18 +227,15 @@ def style_transfer(image, model, median_filter):
     out = out.transpose(1, 2, 0)
 
     t, _ = net.getPerfProfile()
-    #freq = cv2.getTickFrequency() / 1000
-    # print(t / freq, 'ms')
 
     out = cv2.medianBlur(out, median_filter)
-    out = 255*cv2.cvtColor(out, cv2.COLOR_BGR2RGB)
+    # out = 255*cv2.cvtColor(out, cv2.COLOR_BGR2RGB)
+    out = 255*out
     mask = out > 255
     out[mask] = 255
     mask = out < 0
     out[mask] = 0
     return out.astype(np.uint8)
-
-# style_transfer(1)
 
 
 def Rotate_image(image, angle):

@@ -5,6 +5,8 @@
 
 作者：NWPU 王琪源 蒋晓天 何旭东 雷佳臻 赵广宇
 
+联系邮箱mailbox_wqy@mail.nwpu.edu.cn
+
 #### 软件架构
 软件架构说明
 

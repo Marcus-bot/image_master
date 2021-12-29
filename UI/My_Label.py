@@ -1,10 +1,9 @@
 '''
 Author: NWPU python group
 Date: 2021-12-28 18:39:38
-LastEditTime: 2021-12-28 20:29:22
+LastEditTime: 2021-12-29 15:04:08
 LastEditor: wqy
 Description: file content
-FilePath: /IMAGE_MASTER/UI/My_Label.py
 '''
 
 
@@ -12,10 +11,10 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import cv2 as cv
 
 
-class My_Label(QtWidgets.QLabel):
+class MyLabel(QtWidgets.QLabel):
     # 继承Qlabel类，重写鼠标和滚轮事件，重写绘制事件
     def __init__(self, Frame):
-        super(My_Label, self).__init__()
+        super(MyLabel, self).__init__()
         self.cur_img = ""
         self.img_w = ""
         self.img_h = ""

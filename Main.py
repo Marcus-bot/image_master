@@ -1,10 +1,9 @@
 '''
 Author: NWPU python group
 Date: 2021-12-28 18:39:37
-LastEditTime: 2021-12-28 20:29:29
+LastEditTime: 2021-12-29 15:30:44
 LastEditor: wqy
 Description: file content
-FilePath: /IMAGE_MASTER/Main.py
 '''
 
 import sys
@@ -24,22 +23,22 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
         super(My_Mainwindow, self).__init__()
         self.setupUi(self)
 # ---------------------创建一个自己的Label:My_Label------------------------------------
-        self.label_processed = My_Label(
-            self.scrollAreaWidgetContents_2)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.label_processed.sizePolicy().hasHeightForWidth())
-        self.label_processed.setSizePolicy(sizePolicy)
-        self.label_processed.setAlignment(QtCore.Qt.AlignCenter)
-        self.label_processed.setObjectName("label_processed")
-        self.gridLayout_2.addWidget(self.label_processed, 0, 0, 1, 1)
+        # self.label_processed = MyLabel(
+        #     self.scrollAreaWidgetContents_2)
+        # sizePolicy = QtWidgets.QSizePolicy(
+        #     QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        # sizePolicy.setHorizontalStretch(0)
+        # sizePolicy.setVerticalStretch(0)
+        # sizePolicy.setHeightForWidth(
+        #     self.label_processed.sizePolicy().hasHeightForWidth())
+        # self.label_processed.setSizePolicy(sizePolicy)
+        # self.label_processed.setAlignment(QtCore.Qt.AlignCenter)
+        # self.label_processed.setObjectName("label_processed")
+        # self.gridLayout_2.addWidget(self.label_processed, 0, 0, 1, 1)
 
-        _translate = QtCore.QCoreApplication.translate
-        self.label_processed.setText(_translate("MainWindow", "处理后的图像"))
-# ---------------------定义一个自己的Label:My_Label------------------------------------
+        # _translate = QtCore.QCoreApplication.translate
+        # self.label_processed.setText(_translate("MainWindow", "处理后的图像"))
+# ---------------------创建一个自己的Label:My_Label------------------------------------
 
         self.cmdbar = None  # 控制台实例初始为None
         # 菜单按钮   链接信号槽
@@ -58,7 +57,7 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
         self.pushButton_circle.clicked.connect(self.Circle_UI)  # 圆检测
         self.pushButton_rot.clicked.connect(self.Rot_UI)  # 图像旋转
 
-# --------------------------------------------------------------------------------
+# ----------------------------------------基础功能----------------------------------------
     # 调用浏览器打开项目网址
     def about_as(self):
         QDesktopServices.openUrl(
@@ -83,8 +82,8 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
         self.label_origin.setPixmap(self.image_toshow)
         self.show_msg('打开成功')
 
+    # 选择地址并保存图片
     def saveimage(self):
-        # 选择地址并保存图片
         FileDir = QFileDialog.getSaveFileName(
             self, "保存图片", "img", "*.jpg;*.tif;*.png;;All Files(*)")
         if FileDir[0] == '':  # bug 点击取消也会要求输入名字
@@ -94,7 +93,8 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
         img = self.image_toshow
         img.save(FileDir[0])
 
-    def save_Temp(self):  # 暂时保存修改，名称为Temp_last，作为缓存
+    # 暂时保存修改，名称为Temp_last，作为缓存
+    def save_Temp(self):
         try:
             self.image_now = self.image_temp
             self.TempPath = 'TEMP/Temp_last.jpg'
@@ -102,8 +102,8 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
         except:
             pass
 
+    # label_processed显示函数，支持缩放移动
     def processed_show(self, image):
-        # label_processed显示函数，支持缩放移动
         path = 'TEMP\Temp.jpg'
         cv2.imwrite(path, image)  # 保存temp图片作为当前label processed图片的缓冲
         self.image_toshow = QPixmap(path).scaled(
@@ -112,16 +112,16 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
             self.image_toshow)  # 在指定坐标创建label显示图片
         self.label_processed.image = image
 
+    # 关闭控制台
     def cancel_Temp(self):
-        # 关闭控制台
         self.processed_show(self.image_now)
         # 使用deletelater删除控制台实例,恢复图像
         self.cmdbar.gridLayoutWidget_cmd.deleteLater()
         self.image_temp = self.image_now
         self.cmdbar = None  # 检测有没有控制台被打开，防止重复打开
 
+    # 判断有没有打开图片
     def is_opened(self):
-        # 判断有没有打开图片，防止出现bug
         try:
             self.image_toshow
         except:
@@ -131,13 +131,14 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
         else:
             return True
 
+    # 信息显示函数，显示交互信息
     def show_msg(self, Msg):
-        # 信息显示函数，显示交互信息
+
         self.textBrowser_Msg.append('<span style=\" color:#f8f8f8;\">'+Msg)
         self.textBrowser_Msg.moveCursor(self.textBrowser_Msg.textCursor().End)
 
+    # 历史记录函数，显示每次调整后的参数等信息
     def show_his(self, His):
-        # 历史记录函数，显示每次调整后的参数等信息
         self.textBrowser_His.append('<span style=\" color:#f8f8f8;\">'+His)
         self.textBrowser_His.moveCursor(self.textBrowser_His.textCursor().End)
 # --------------------------------------亮度对比度----------------------------------
@@ -211,8 +212,8 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
 
     def EdgeSelect_released(self):
         self.show_msg('边缘检测成功')
-        self.show_his('边缘检测: 最小阈值: '+str(self.cmdbar.a) +
-                      " 最大阈值: "+str(self.cmdbar.b))
+        self.show_his('边缘检测: 最小阈值: '+str(self.cmdbar.a+50) +
+                      " 最大阈值: "+str(self.cmdbar.b+150))
 # --------------------------------------平滑滤波----------------------------------
 
     def Smooth_UI(self):
@@ -481,7 +482,8 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
 
     def Lines_released(self):
         self.show_msg('直线检测完成')
-        self.show_his('直线最小长度:{} 最大宽度:{}'.format(self.cmdbar.a, self.cmdbar.b))
+        self.show_his('直线最小长度:{} 最大间隙:{}'.format(
+            self.cmdbar.a+100, self.cmdbar.b+10))
 # ------------------------------------------旋转---------------------------------
 
     def Rot_UI(self):
@@ -541,7 +543,7 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
     def Circle_released(self):
         self.show_msg('霍夫圆检测完成')
         self.show_his('霍夫圆最小半径:{} 最大半径:{} 最小圆心距:{}'.format(
-            self.cmdbar.a, self.cmdbar.b, self.cmdbar.d))
+            self.cmdbar.a+50, self.cmdbar.b+300, self.cmdbar.d+200))
 
 
 if __name__ == '__main__':
