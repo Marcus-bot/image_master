@@ -1,7 +1,7 @@
 '''
 Author: NWPU python group
 Date: 2021-12-28 18:39:37
-LastEditTime: 2021-12-30 02:52:45
+LastEditTime: 2021-12-30 11:18:27
 LastEditor: wqy
 Description: file content
 '''
@@ -22,13 +22,15 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
     def __init__(self):
         super(My_Mainwindow, self).__init__()
         self.setupUi(self)
+        self.image_list = []
 
-# ---------------------链接菜单与控制台UI显示函数------------------------------------
+        # ---------------------链接菜单与控制台UI显示函数------------------------------------
         self.cmdbar = None  # 控制台实例初始为None
         # 菜单按钮   链接信号槽
         self.actionOpen.triggered.connect(self.openimage)
         self.actionAbout_us.triggered.connect(self.about_as)
         self.actionSave.triggered.connect(self.saveimage)
+        self.actionUndo.triggered.connect(self.return_last)
         self.pushButton_Adjust.clicked.connect(self.Adjust_UI)  # 亮度  对比度
         self.pushButton_EdgeSelect.clicked.connect(self.EdgeSelect_UI)  # 边缘检测
         self.pushButton_Smooth.clicked.connect(self.Smooth_UI)  # 滤波
@@ -42,7 +44,13 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
         self.pushButton_rot.clicked.connect(self.Rot_UI)  # 图像旋转
 
 # ----------------------------------------基础功能----------------------------------------
+    def return_last(self):
+        del self.image_list[-1]
+        self.image_temp = self.image_list[-1]
+        self.processed_show(self.image_temp)
+
     # 调用浏览器打开项目网址
+
     def about_as(self):
         QDesktopServices.openUrl(
             QUrl("https://gitee.com/marcus_w/image_master"))
@@ -61,6 +69,7 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
             self.label_origin.width(), self.label_origin.height(), QtCore.Qt.KeepAspectRatio)
         # 读入数据
         self.image_now = cv2.imread(image_path)
+        self.image_list.append(self.image_now)
         self.image_origin = cv2.imread(image_path)
         self.TempPath = 'TEMP/Temp_last.jpg'
         cv2.imwrite(self.TempPath, self.image_now)
@@ -85,6 +94,7 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
             self.image_now = self.image_temp
             self.TempPath = 'TEMP/Temp_last.jpg'
             cv2.imwrite(self.TempPath, self.image_temp)
+            self.image_list.append(self.image_temp)
         except:
             pass
 
@@ -100,6 +110,7 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
         self.label_processed.image = image
 
     # 关闭控制台
+
     def cancel_Temp(self):
         self.processed_show(self.image_now)
         # 使用deletelater删除控制台实例,恢复图像
