@@ -1,7 +1,7 @@
 '''
 Author: NWPU python group
 Date: 2021-12-28 18:39:37
-LastEditTime: 2021-12-29 18:30:27
+LastEditTime: 2021-12-30 02:52:45
 LastEditor: wqy
 Description: file content
 '''
@@ -399,15 +399,18 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
             img = self.image_origin
             width_old = img.shape[1]
             k = width_old / self.image_toshow_origin.width()
-            x0 = int((self.label_origin.x0 - (self.label_origin.width() -
-                                              self.image_toshow_origin.width()) / 2) * k)
-            x1 = int((self.label_origin.x1 - (self.label_origin.width() -
-                                              self.image_toshow_origin.width()) / 2) * k)
-            y0 = int((self.label_origin.y0 - (self.label_origin.height() -
-                                              self.image_toshow_origin.height()) / 2) * k)
-            y1 = int((self.label_origin.y1 - (self.label_origin.height() -
-                                              self.image_toshow_origin.height()) / 2) * k)
-            self.image_temp = img[y0:y1, x0:x1, :]
+            x0 = abs(int((self.label_origin.x0 - (self.label_origin.width() -
+                                                  self.image_toshow_origin.width()) / 2) * k))
+            x1 = abs(int((self.label_origin.x1 - (self.label_origin.width() -
+                                                  self.image_toshow_origin.width()) / 2) * k))
+            y0 = abs(int((self.label_origin.y0 - (self.label_origin.height() -
+                                                  self.image_toshow_origin.height()) / 2) * k))
+            y1 = abs(int((self.label_origin.y1 - (self.label_origin.height() -
+                                                  self.image_toshow_origin.height()) / 2) * k))
+            if y1 >= y0:
+                self.image_temp = img[y0:y1, x0:x1, :]
+            else:
+                self.image_temp = img[y1:y0, x1:x0, :]
             self.processed_show(self.image_temp)
             self.show_msg('裁剪成功')
             self.show_his('裁剪尺寸: x:{} y:{}'.format(x1-x0, y1-y0))
@@ -415,16 +418,19 @@ class My_Mainwindow(Ui_MainWindow, QMainWindow):
         if self.label_processed.paint_flag == True:
             img = self.image_temp
             width_old = img.shape[1]
-            k = width_old / self.image_toshow.width()
-            x0 = int((self.label_processed.x0 - (self.label_processed.width() -
-                                                 self.image_toshow.width()) / 2) * k)
-            x1 = int((self.label_processed.x1 - (self.label_processed.width() -
-                                                 self.image_toshow.width()) / 2) * k)
-            y0 = int((self.label_processed.y0 - (self.label_processed.height() -
-                                                 self.image_toshow.height()) / 2) * k)
-            y1 = int((self.label_processed.y1 - (self.label_processed.height() -
-                                                 self.image_toshow.height()) / 2) * k)
-            self.image_temp = img[y0:y1, x0:x1]
+            k = width_old / self.label_processed._pixmap.width()
+            x0 = abs(int((self.label_processed.x0 - (self.label_processed.width() -
+                                                     self.label_processed._pixmap.width()) / 2) * k))
+            x1 = abs(int((self.label_processed.x1 - (self.label_processed.width() -
+                                                     self.label_processed._pixmap.width()) / 2) * k))
+            y0 = abs(int((self.label_processed.y0 - (self.label_processed._pixmap.height() -
+                                                     self.label_processed._pixmap.height()) / 2) * k))
+            y1 = abs(int((self.label_processed.y1 - (self.label_processed.height() -
+                                                     self.label_processed._pixmap.height()) / 2) * k))
+            if y1 >= y0:
+                self.image_temp = img[y0:y1, x0:x1, :]
+            else:
+                self.image_temp = img[y1:y0, x1:x0, :]
             self.processed_show(self.image_temp)
             self.show_msg('裁剪成功')
             self.show_his('裁剪尺寸: x:{} y:{}'.format(x1-x0, y1-y0))

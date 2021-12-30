@@ -1,7 +1,7 @@
 '''
 Author: NWPU python group
 Date: 2021-12-28 18:39:38
-LastEditTime: 2021-12-29 18:25:38
+LastEditTime: 2021-12-30 02:48:38
 LastEditor: wqy
 Description: file content
 '''
@@ -56,7 +56,7 @@ class MyLabel(QtWidgets.QLabel):
     # 鼠标释放事件
     def mouseReleaseEvent(self, event):
         self.left_flag = False  # 左键松开
-        self.erase_flag = False  # 左键松开后绘制不可清除
+        self.erase_flag = True  # 左键松开后绘制不可清除 ##
         self.right_flag = False  # 右键松开
         self.mouse_mv_y = ""  # 重置移动坐标
         self.mouse_mv_x = ""
@@ -65,18 +65,19 @@ class MyLabel(QtWidgets.QLabel):
 
     # 鼠标移动事件
     def mouseMoveEvent(self, event):
-        if self.left_flag:  # 鼠标左击
-            # 获取移动坐标
-            if event.x() >= 0:
-                self.x1 = event.x() if event.x() < self.width() else self.width()
-            else:
-                self.x1 = 0
-            if event.y() >= 0:
-                self.y1 = event.y() if event.y() < self.height() else self.height()
-            else:
-                self.y1 = 0
-            # 更新触发paint事件
-            self.update()
+        if self.flag2 == True:
+            if self.left_flag:  # 鼠标左击
+                # 获取移动坐标
+                if event.x() >= 0:
+                    self.x1 = event.x() if event.x() < self.width() else self.width()
+                else:
+                    self.x1 = 0
+                if event.y() >= 0:
+                    self.y1 = event.y() if event.y() < self.height() else self.height()
+                else:
+                    self.y1 = 0
+                # 更新触发paint事件
+                self.update()
 
         if self.right_flag:  # 鼠标右击
             # 获取右键移动量
@@ -109,7 +110,7 @@ class MyLabel(QtWidgets.QLabel):
         img2 = cv.cvtColor(self.cur_resimg, cv.COLOR_BGR2RGB)
         QImage = QtGui.QImage(
             img2, self.cur_reslab_shape[1], self.cur_reslab_shape[0], 3*self.cur_reslab_shape[1], QtGui.QImage.Format_RGB888)
-        pixmap = QtGui.QPixmap(QImage).scaled(
+        self._pixmap = QtGui.QPixmap(QImage).scaled(
             self.cur_reslab_shape[1], self.cur_reslab_shape[0], QtCore.Qt.KeepAspectRatio)
 
         self.label_wid = self.cur_reslab_shape[1]  # label宽度指针
@@ -117,13 +118,14 @@ class MyLabel(QtWidgets.QLabel):
         # 在上次移动后位置缩放图片
         self.setGeometry(QtCore.QRect(
             self.label_x, self.label_y, self.label_wid, self.label_hig))
-        self.setPixmap(pixmap)
+        self.setPixmap(self._pixmap)
 
     def set_coordinate(self, pic):
         # 在上次移动后的坐标设置label为上次调整后的大小，显示图片
         self.setGeometry(QtCore.QRect(self.label_x, self.label_y,
                          self.width(), self.height()))
         self.setPixmap(pic)
+        self._pixmap = pic
 
     def paintEvent(self, event):
         # 绘制事件
